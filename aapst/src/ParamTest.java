@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
@@ -5,7 +8,13 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ParamTest extends Test{
     private ArrayList<Integer> keys;
     private int[] queryKeys;
-    private double p = 0;
+    private double p;
+    private File file;
+    private FileWriter fileFw;
+
+    public ParamTest(int p) {
+        this.p = p;
+    }
 
     @Override
     void generateTrees() {
@@ -38,11 +47,6 @@ public class ParamTest extends Test{
         numQueries = 1000000000L;
     }
 
-    @Override
-    void setName() {
-        testName = "Parameterized Distribution Test - P = " + p;
-    }
-
     private int tossCoin() {
         int count = 0;
         long randint = lrand();
@@ -61,7 +65,7 @@ public class ParamTest extends Test{
     }
 
     @Override
-    public void searchAndWrite() {
+    public void searchAndWrite() throws IOException {
         int splayHold;
         int restHold;
         int bstHold;
@@ -99,8 +103,33 @@ public class ParamTest extends Test{
         float bstAvg = (float)bstTotal/(numQueries);
         float splayAvg = (float)splayTotal/(numQueries);
 
-        String dbSize = Integer.toString(numKeys/1000) + "k";
-        System.out.printf("%-9s|%-9.5f|%-9.5f|%-9.5f|\n", dbSize, splayAvg, restAvg, bstAvg);
-        System.out.println("_________|_________|_________|_________|");
+        String line = String.format("%d,%.2f,%.2f,%.2f\n", numKeys, restAvg, splayAvg, bstAvg);
+        fileFw.write(line);
+    }
+
+    private void runForKeyset(int keySize) throws IOException{
+        numKeys = keySize;
+
+        generateTrees();
+        generateQueries();
+        searchAndWrite();
+    }
+
+    @Override
+    void run() {
+        try {
+            file = new File("./Results/output" + (int) (p*100) + ".txt");
+            fileFw = new FileWriter(file);
+            fileFw.write("DB Size,AAPST,Splay,BST\n");
+
+            for (int ks = 1000; ks <= 1000000; ks *= 10) {
+                runForKeyset(ks);
+            }
+
+            fileFw.flush();
+            fileFw.close();
+        } catch (IOException ex) {
+            System.out.println(ex);
+        }
     }
 }
