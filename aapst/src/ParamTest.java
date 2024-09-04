@@ -117,7 +117,6 @@ public class ParamTest extends Test{
     @Override
     void run() {
         try {
-            System.out.println((int) (p * 100));
             File file = new File("../results/avg-" + (int) (p * 100) + ".txt");
             file.createNewFile();
             fileFw = new FileWriter(file);
