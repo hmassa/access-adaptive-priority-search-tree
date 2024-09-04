@@ -72,11 +72,13 @@ public class SplayWorstCaseTest extends Test{
 
         String line;
 
-        maxFile = new File("./Results/worst-max.txt");
+        maxFile = new File("../results/worst-max.txt");
+        maxFile.createNewFile();
         maxFw = new FileWriter(maxFile);
         maxFw.write("Count,AAPST,Splay,BST\n");
 
-        avgFile = new File("./Results/worst-average.txt");
+        avgFile = new File("../results/worst-average.txt");
+        avgFile.createNewFile();
         avgFw = new FileWriter(avgFile);
         avgFw.write("Count,AAPST,Splay,BST\n");
 
@@ -127,6 +129,8 @@ public class SplayWorstCaseTest extends Test{
 
     @Override
     void run() {
+        numKeys = 100000;
+
         generateTrees();
         generateQueries();
 

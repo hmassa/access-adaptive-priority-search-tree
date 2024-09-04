@@ -8,11 +8,10 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ParamTest extends Test{
     private ArrayList<Integer> keys;
     private int[] queryKeys;
-    private double p;
-    private File file;
+    private float p;
     private FileWriter fileFw;
 
-    public ParamTest(int p) {
+    public ParamTest(float p) {
         this.p = p;
     }
 
@@ -118,7 +117,9 @@ public class ParamTest extends Test{
     @Override
     void run() {
         try {
-            file = new File("./Results/output" + (int) (p*100) + ".txt");
+            System.out.println((int) (p * 100));
+            File file = new File("../results/avg-" + (int) (p * 100) + ".txt");
+            file.createNewFile();
             fileFw = new FileWriter(file);
             fileFw.write("DB Size,AAPST,Splay,BST\n");
 
